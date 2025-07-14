@@ -1,6 +1,7 @@
-# Módulo responsável pelas filas e escalonamento dos processos
-
 from collections import deque
+
+# Fila global para avaliação inicial (opcional)
+fila_global = deque(maxlen=1000)
 
 # Fila de tempo real (prioridade 0) - FIFO, sem preempção
 fila_tempo_real = deque(maxlen=1000)
@@ -9,9 +10,6 @@ fila_tempo_real = deque(maxlen=1000)
 fila_usuario_1 = deque(maxlen=1000)  # prioridade 1 (mais alta entre usuários)
 fila_usuario_2 = deque(maxlen=1000)  # prioridade 2
 fila_usuario_3 = deque(maxlen=1000)  # prioridade 3 (mais baixa)
-
-# Fila global para avaliação inicial (opcional)
-fila_global = deque(maxlen=1000)
 
 QUANTUM = 1  # Quantum de 1ms para processos de usuário
 
