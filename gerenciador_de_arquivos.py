@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from processo import Processo
 
 disc_space   =  []  # Representa o espaço de memória ocupado
 disc_size = 0
@@ -13,10 +13,11 @@ class Arquivo:
         self.tamanho = tamanho  # Tamanho do arquivo
         self.criador = criador  # Id do processo criador, -1 indica que foi criado na inicialização
 
-class Processo:     # PLACEHOLDER enquanto o resto do grupo não faz a classe própria
-    def __init__(self,id,prioridade):
-        self.id = id
-        self.prio = prioridade
+# DEPRECISADO PELO PROCESSO NO MODULO PROCESSO.PY, vamos manter por enquanto em caso de incompatibilidade e teste
+# class Processo:     # PLACEHOLDER enquanto o resto do grupo não faz a classe própria
+#     def __init__(self,id,prioridade):
+#         self.id = id
+#         self.prio = prioridade
     
 
 def criar_arquivo(processo,nome,tamanho):
@@ -227,6 +228,3 @@ elif (arq_ret == 2):
     print("ERRO: Descritor do sistema de arquivos inválido")
 elif (arq_ret == 3):
     print("ERRO: Reuso de identificador de arquivo:",ret_val)
-
-
-    
