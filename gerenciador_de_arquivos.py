@@ -1,10 +1,11 @@
 from pathlib import Path
 from processo import Processo
+from dispatcher import processos
 
 disc_space   =  []  # Representa o espaço de memória ocupado
 disc_size = 0
 arquivos = {}  # Dicionário de identificadores usados
-processos = {}  # PLACEHOLDER do dicionário de processos
+#processos = {}  # PLACEHOLDER do dicionário de processos
 
 class Arquivo:
     def __init__(self,nome,endereco,tamanho,criador):
@@ -16,8 +17,8 @@ class Arquivo:
 # DEPRECISADO PELO PROCESSO NO MODULO PROCESSO.PY, vamos manter por enquanto em caso de incompatibilidade e teste
 # class Processo:     # PLACEHOLDER enquanto o resto do grupo não faz a classe própria
 #     def __init__(self,id,prioridade):
-#         self.id = id
-#         self.prio = prioridade
+#         self.pid = id
+#         self.prioridade = prioridade
     
 
 def criar_arquivo(processo,nome,tamanho):
@@ -40,7 +41,6 @@ def criar_arquivo(processo,nome,tamanho):
                 if iter == disc_size:
                     check = 0
             if check == 1:
-                base 
                 arquivo = Arquivo(nome,base,tamanho,processo)
                 arquivos[nome] = arquivo # Armazenando arquivo na lista
 
@@ -57,12 +57,11 @@ def criar_arquivo(processo,nome,tamanho):
     return 2 # Se chega no fim do loop, retorna que não tem espaço
 
 def deletar_arquivo(processo,nome):
-    prioridade = processo.prio
+    prioridade = processo.prioridade
     arquivo = arquivos.get(nome)
     if arquivo == None:
         return 1    # Indica que não existe esse arquivo
-    
-    if prioridade == 0 or arquivo.criador==processo.id: # Só tem permissão se é prio 0 ou é o criador
+    if prioridade == 0 or arquivo.criador==processo.pid: # Só tem permissão se é prio 0 ou é o criador
         base = arquivo.endereco
         tamanho = arquivo.tamanho
         for bloco  in range(tamanho):
@@ -212,11 +211,10 @@ def ler_entrada_memoria(path):
     return (0,0)
     
 
-    
-
-processo = Processo(0,0)
+'''
+processo = Processo(0,0,0,1,1,1,0,0,0)
 processos[0] = processo
-processo = Processo(1,1)
+processo = Processo(1,0,0,1,1,0,1,0,2)
 processos[1] = processo
 arq_ret = ler_entrada_memoria('arquivo.txt')
 print(disc_space)
@@ -227,4 +225,4 @@ if (arq_ret == 1):
 elif (arq_ret == 2):
     print("ERRO: Descritor do sistema de arquivos inválido")
 elif (arq_ret == 3):
-    print("ERRO: Reuso de identificador de arquivo:",ret_val)
+    print("ERRO: Reuso de identificador de arquivo:",ret_val)''' 
