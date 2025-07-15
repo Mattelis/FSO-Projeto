@@ -5,10 +5,10 @@ class Processo:
         self.prioridade = prioridade
         self.tempo_restante = tempo_cpu
         self.blocos_memoria = blocos_memoria
-        self.impressora = bool(impressora)
-        self.scanner = bool(scanner)
-        self.modem = bool(modem)
-        self.disco = bool(disco)
+        self.impressora = int(impressora)
+        self.scanner = int(scanner)
+        self.modem = int(modem)
+        self.disco = int(disco)
         self.offset_memoria = 0  # posição inicial na memória
         self.estado = "pronto"  # ou "executando", "finalizado"
 
