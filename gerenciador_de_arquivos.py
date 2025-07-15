@@ -171,7 +171,7 @@ def ler_entrada_memoria(path):
             print("Sucesso")
             nome = instrucao[2]
             if instrucao[1] == 0:
-                print("O processo",instrucao[0],"criou o arquivo",nome,"(blocos",end='')
+                print(" O processo",instrucao[0],"criou o arquivo",nome,"(blocos",end='')
                 arquivo = arquivos[nome]
                 base = arquivo.endereco
                 tamanho = arquivo.tamanho
@@ -184,30 +184,30 @@ def ler_entrada_memoria(path):
                     
                 print(").")
             else:
-                print("O processo",instrucao[0],"deletou o arquivo",nome,".")
+                print(" O processo",instrucao[0],"deletou o arquivo",nome,".")
         elif resultado == 10:
             incompleta = 0  # Indica que não leu nada
         else:
-            print("\033[Operação\033[0m",cont_operacao,"=> ",end='')
-            print("Fracasso")
+            print("Operação",cont_operacao,"=> ",end='')
+            print("Falha")
             if resultado == 1:
                 print("Instrução invalida.")
             elif resultado == 2:
-                print("Número incorreto de argumentos.")
+                print(" Número incorreto de argumentos.")
             elif resultado == 3:
-                print("Operação não reconhecida.")
+                print(" Operação não reconhecida.")
             elif resultado == 4:
-                print("O processo",instrucao[0], "não existe.")
+                print(" O processo",instrucao[0], "não existe.")
             elif resultado == 5:
                 if instrucao[1] == 0:
-                    print("O processo",instrucao[0],"não pode criar o arquivo", instrucao[2],"(arquivo já existe).")
+                    print(" O processo",instrucao[0],"não pode criar o arquivo", instrucao[2],"(arquivo já existe).")
                 else:
-                    print("O processo",instrucao[0],"não pode deletar o arquivo", instrucao[2], "(arquivo não existe)")
+                    print(" O processo",instrucao[0],"não pode deletar o arquivo", instrucao[2], "(arquivo não existe)")
             elif resultado == 6:
                 if instrucao[1] == 0:
-                    print("O processo",instrucao[0],"não pode criar o arquivo", instrucao[2],"(falta de espaço).")
+                    print(" O processo",instrucao[0],"não pode criar o arquivo", instrucao[2],"(falta de espaço).")
                 else:
-                    print("O processo",instrucao[0],"não pode deletar o arquivo", instrucao[2], "(sem permissão)")
+                    print(" O processo",instrucao[0],"não pode deletar o arquivo", instrucao[2], "(sem permissão)")
     return (0,0)
     
 
