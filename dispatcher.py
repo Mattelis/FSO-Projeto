@@ -1,7 +1,12 @@
 from processo import Processo
-from escalonador import fila_global, adicionar_processo, obter_proximo_processo, realimentar_processo
-# from gerencia_memoria import alocar_memoria, liberar_memoria
-# from gerenciador_de_recursos import alocar_recursos, liberar_recursos
+from escalonador import fila_global, adicionar_processo, obter_proximo_processo, realimentar_processo, mostrar_status_filas
+from gerencia_memoria import GerenciadorDeMemoria
+from gerenciador_de_recursos import tentar_alocacoes, liberar_recursos as liberar_recursos_modulo
+from gerenciador_de_arquivos import ler_entrada_memoria, disc_space
+import gerenciador_de_arquivos
+
+# Instancie o gerenciador de memória uma vez
+memoria = GerenciadorDeMemoria()
 
 # Lê o arquivo de processos e cria instâncias de Processo.
 def ler_processos_arquivo(caminho):
@@ -28,8 +33,6 @@ def ler_processos_arquivo(caminho):
 def despachar_processos(processos):
     for processo in processos:
         fila_global.append(processo)
-        # print para debugar
-        print(f"Processo {processo.pid} adicionado à fila global.")
 
 def avaliar_e_despachar():
     """Avalia processos na fila_global e despacha para a fila correta se possível."""
@@ -38,12 +41,14 @@ def avaliar_e_despachar():
         if alocar_memoria(processo) and alocar_recursos(processo):
             fila_global.remove(processo)
             adicionar_processo(processo)
-            print(f"Processo {processo.pid} despachado para fila de prioridade {processo.prioridade}.")
+            # print(f"Processo {processo.pid} despachado para fila de prioridade {processo.prioridade}.")
             processos_aprovados.append(processo)
         # Se não conseguir alocar, permanece na fila_global
     return processos_aprovados
 
 def ciclo_execucao():
+    processos_em_execucao = {}  # Para controlar instrução atual de cada processo
+
     while True:
         avaliar_e_despachar()
         processo = obter_proximo_processo()
@@ -51,41 +56,79 @@ def ciclo_execucao():
             if not fila_global:
                 break  # Fim da simulação
             continue  # Tenta despachar de novo
-        # Executa 1 quantum
+
+        # Se for a primeira vez do processo, imprime o dispatcher e o cabeçalho
+        if processo.pid not in processos_em_execucao:
+            processo.exibir_info()
+            print()  # Linha em branco entre dispatcher e process
+            print(f"process {processo.pid} =>")
+            print(f"P{processo.pid} STARTED")
+            processos_em_execucao[processo.pid] = 1  # Instrução atual
+
+        instrucao_atual = processos_em_execucao[processo.pid]
+        print(f"P{processo.pid} instruction {instrucao_atual}")
+
         processo.tempo_restante -= 1
-        print(f"Executando processo {processo.pid} (restante: {processo.tempo_restante})")
+        processos_em_execucao[processo.pid] += 1
+
         if processo.tempo_restante <= 0:
+            print(f"P{processo.pid} return SIGINT")
+            print()
             liberar_memoria(processo)
             liberar_recursos(processo)
-            print(f"Processo {processo.pid} finalizado.")
+            # print(f"Processo {processo.pid} finalizado.\n")
+            processos_em_execucao.pop(processo.pid)
         else:
+            # Se não terminou, volta para a fila correta
             if processo.prioridade > 0:
                 realimentar_processo(processo)
             else:
                 adicionar_processo(processo)  # Tempo real volta para sua fila
 
-if __name__ == "__main__":
-    processos = ler_processos_arquivo("processes.txt")
-    print("Processos lidos do arquivo:")
-    for p in processos:
-        print(f"PID: {p.pid}, Tempo Inicialização: {p.tempo_inicializacao}, Prioridade: {p.prioridade}")
+def alocar_memoria(processo):
+    offset = memoria.allocate(processo.pid, processo.blocos_memoria, processo.prioridade == 0)
+    if offset != -1:
+        processo.offset_memoria = offset
+        return True
+    return False
 
+def liberar_memoria(processo):
+    memoria.release(processo.pid)
+
+def alocar_recursos(processo):
+    # tentar_alocacoes retorna 0 se conseguiu, 1 se bloqueou, 2 se erro
+    return tentar_alocacoes(processo) == 0
+
+def liberar_recursos(processo):
+    liberar_recursos_modulo(processo.pid)
+
+if __name__ == "__main__":
+    # Lê os processos do arquivo e exibe suas informações
+    processos = ler_processos_arquivo("processes.txt")
+    
+    processos_dict = {p.pid: p for p in processos}
+
+    # Adiciona todos os processos lidos na fila global para avaliação inicial.
     despachar_processos(processos)
-    print("\nConteúdo da fila_global após despacho:")
-    for p in fila_global:
-        print(f"PID: {p.pid}, Prioridade: {p.prioridade}")
 
     # Avalia e despacha para as filas corretas
     avaliar_e_despachar()
-    print("\nConteúdo das filas após avaliação:")
 
-    from escalonador import fila_tempo_real, fila_usuario_1, fila_usuario_2, fila_usuario_3
-
-    print("Tempo real:", [p.pid for p in fila_tempo_real])
-    print("Usuário 1:", [p.pid for p in fila_usuario_1])
-    print("Usuário 2:", [p.pid for p in fila_usuario_2])
-    print("Usuário 3:", [p.pid for p in fila_usuario_3])
+    # Exibe o conteúdo da fila_global após o despacho
+    # mostrar_status_filas()
 
     # Chama o ciclo de execução para simular o SO
-    print("\nIniciando ciclo de execução...\n")
+    # print("\nIniciando ciclo de execução...\n")
     ciclo_execucao()
+
+    # Aqui temos que fazer a chamada de funções para verificar a lista de processos bloquados
+    # Chama sistema de arquivos para mostrar seu uso (essas funções estão em gerencia_de_recursos.py)
+    # Chama de memória para mostrar seu uso
+    print("Sistema de arquivos =>")
+    processos_dict = {p.pid: p for p in processos}
+    gerenciador_de_arquivos.processos = processos_dict  # Passa os processos no dicionario
+
+    ler_entrada_memoria('files.txt')
+
+    print("Mapa de ocupação do disco:")
+    print(' '.join(str(b) for b in disc_space if b != 0))

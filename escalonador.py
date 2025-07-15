@@ -51,3 +51,11 @@ def realimentar_processo(processo):
         fila_usuario_3.append(processo) #permanece na última fila
     else:
         pass  # tempo real não é realimentado
+
+def mostrar_status_filas():
+    print("Conteúdo das filas:")
+    print("Tempo real:", [p.pid for p in fila_tempo_real])
+    print("Usuário 1:", [p.pid for p in fila_usuario_1])
+    print("Usuário 2:", [p.pid for p in fila_usuario_2])
+    print("Usuário 3:", [p.pid for p in fila_usuario_3])
+    print()

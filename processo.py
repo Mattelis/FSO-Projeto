@@ -12,14 +12,14 @@ class Processo:
         self.offset_memoria = 0  # posição inicial na memória
         self.estado = "pronto"  # ou "executando", "finalizado"
 
-    # TODO: colocar o formato de impressão do dispchaer conforme o pdf da especificaçao
     def exibir_info(self):
-        print(f"PID: {self.pid}")
-        print(f"Tempo de inicialização: {self.tempo_inicializacao}")
-        print(f"Prioridade: {self.prioridade}")
-        print(f"Offset da memória: {self.offset_memoria}")
-        print(f"Blocos alocados: {self.blocos_memoria}")
-        print(f"Impressora: {self.impressora}")
-        print(f"Scanner: {self.scanner}")
-        print(f"Modem: {self.modem}")
-        print(f"Disco: {self.disco}")
+        print("dispatcher =>")
+        print(f" PID: {self.pid}")
+        print(f" offset: {self.offset_memoria}")
+        print(f" blocks: {self.blocos_memoria}")
+        print(f" priority: {self.prioridade}")
+        print(f" time: {self.tempo_restante}")
+        print(f" printers: {int(self.impressora)}")
+        print(f" scanners: {int(self.scanner)}")
+        print(f" modems: {int(self.modem)}")
+        print(f" drives: {int(self.disco)}")

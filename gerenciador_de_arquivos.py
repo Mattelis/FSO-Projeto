@@ -1,6 +1,6 @@
 from pathlib import Path
 from processo import Processo
-from dispatcher import processos
+processos = {} # from dispatcher import processos
 
 disc_space   =  []  # Representa o espaço de memória ocupado
 disc_size = 0
@@ -188,7 +188,7 @@ def ler_entrada_memoria(path):
         elif resultado == 10:
             incompleta = 0  # Indica que não leu nada
         else:
-            print("Operação",cont_operacao,"=> ",end='')
+            print("\033[Operação\033[0m",cont_operacao,"=> ",end='')
             print("Fracasso")
             if resultado == 1:
                 print("Instrução invalida.")
