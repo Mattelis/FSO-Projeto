@@ -1,7 +1,7 @@
 from processo import Processo
 from escalonador import fila_global, adicionar_processo, obter_proximo_processo, realimentar_processo, mostrar_status_filas
 from gerencia_memoria import GerenciadorDeMemoria
-from gerenciador_de_recursos import tentar_alocacoes, liberar_recursos as liberar_recursos_modulo
+from gerenciador_de_recursos import tentar_alocacoes, processo_espera, processo_pronto, liberar_recursos as liberar_recursos_modulo
 from gerenciador_de_arquivos import ler_entrada_memoria, disc_space
 import gerenciador_de_arquivos
 
@@ -38,11 +38,17 @@ def avaliar_e_despachar():
     """Avalia processos na fila_global e despacha para a fila correta se possível."""
     processos_aprovados = []
     for processo in list(fila_global):  # Cria uma cópia para iterar
-        if alocar_memoria(processo) and alocar_recursos(processo):
-            fila_global.remove(processo)
-            adicionar_processo(processo)
-            # print(f"Processo {processo.pid} despachado para fila de prioridade {processo.prioridade}.")
-            processos_aprovados.append(processo)
+        if processo_espera(processo.pid) == 0:  # Checa se já foi processado
+            if alocar_memoria(processo) and alocar_recursos(processo):
+                fila_global.remove(processo)
+                adicionar_processo(processo)
+                # print(f"Processo {processo.pid} despachado para fila de prioridade {processo.prioridade}.")
+                processos_aprovados.append(processo)
+        elif processo_pronto(processo.pid) == 0 and alocar_memoria(processo):   # Se já foi, checa se está em processwait sem estar em uma fila, caso seja o caso, pode seguir em frente
+                fila_global.remove(processo)
+                adicionar_processo(processo)
+                # print(f"Processo {processo.pid} despachado para fila de prioridade {processo.prioridade}.")
+                processos_aprovados.append(processo)
         # Se não conseguir alocar, permanece na fila_global
     return processos_aprovados
 
@@ -131,4 +137,5 @@ if __name__ == "__main__":
     ler_entrada_memoria('files.txt')
 
     print("Mapa de ocupação do disco:")
-    print(' '.join(str(b) for b in disc_space if b != 0))
+
+    print(' '.join(str(b) for b in disc_space))
