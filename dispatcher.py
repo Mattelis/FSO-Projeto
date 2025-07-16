@@ -39,14 +39,15 @@ def avaliar_e_despachar():
     processos_aprovados = []
     for processo in list(fila_global):  # Cria uma cópia para iterar
         if processo_espera(processo.pid) == 0:  # Checa se já foi processado
-            mem_result = alocar_memoria(processo)
-            if mem_result == True and alocar_recursos(processo):
-                fila_global.remove(processo)
-                adicionar_processo(processo)
-                processos_aprovados.append(processo)
-            elif mem_result == -2: # Caso nunca exista memória disponivel
-                fila_global.remove(processo)
-                print(f"P{processo.pid} killed: não há memória o suficiente")
+            if alocar_recursos(processo):
+                mem_result = alocar_memoria(processo)
+                if mem_result == True:
+                    fila_global.remove(processo)
+                    adicionar_processo(processo)
+                    processos_aprovados.append(processo)
+                elif mem_result == -2: # Caso nunca exista memória disponivel
+                    fila_global.remove(processo)
+                    print(f"P{processo.pid} killed: não há memória o suficiente")
         elif processo_pronto(processo.pid) == 0:
             mem_result = alocar_memoria(processo)
             if mem_result == True:
