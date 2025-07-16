@@ -14,10 +14,10 @@ class GerenciadorDeMemoria:
         """
         Tenta alocar um segmento contíguo de memória para o processo.
         """
-        if num_blocos > (seft.total_de_blocos - seft.reservado_para_rt) and not tempo_real:
+        if num_blocos > (self.total_de_blocos - self.reservado_para_rt) and not tempo_real:
             return -2 # Mata o processo de usuáro por n possuir memória
 
-        if num_blocos > seft.total_de_blocos and tempo_real:
+        if num_blocos > self.total_de_blocos and tempo_real:
             return -2# Mata o processo de tempo real por n possuir memória
             
         # Delimita região de busca dependendo do tipo de processo
