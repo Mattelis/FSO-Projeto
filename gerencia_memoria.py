@@ -16,7 +16,7 @@ class GerenciadorDeMemoria:
         """
         # Delimita região de busca dependendo do tipo de processo
         inicio = 0 if tempo_real else self.inicio_user_blocks
-        final = self.reservado_para_rt if tempo_real else self.total_de_blocos
+        final = self.total_de_blocos
 
         for i in range(inicio, final - num_blocos + 1):
             segmento_livre = all(self.memoria[j] is None for j in range(i, i + num_blocos)) # Busca segmento livre
