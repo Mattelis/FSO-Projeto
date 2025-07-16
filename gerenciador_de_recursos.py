@@ -21,6 +21,18 @@ class Blocking: # Classe usada para guardar informações dos recursos que o pro
         self.waiting = 0  # número de recursos que o bloqueiam, o máximo será len(blocklist)
         self.bloqueios = blocklist # Lista dos recursos que bloqueiam tuplas (tipo de recurso, código do recurso), utilizado para saber de que filas tirar e em que filas colocar
 
+def processo_espera(pid):
+    if pid in processwait.keys():
+        return 1
+    else:
+        return 0
+    
+def processo_pronto(pid):   # Confere se o processo está pronto para entrar na fila
+    if processwait[pid].waiting == 0:
+        return 0
+    else:
+        return 1
+    
 def tentar_alocacoes(processo):
     # Usado após a criação do processo para tentar fazer suas alocações
     blocklist = []
