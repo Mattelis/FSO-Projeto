@@ -30,29 +30,25 @@ def criar_arquivo(processo,nome,tamanho):
     while base < disc_size:
         if disc_space[base] == 0:
             iter = base
-            vazio = 1   # Conta o espaço vazio contíguo
+            vazio = 0   # Conta o espaço vazio contíguo
             check = 1
-            while vazio  < tamanho and check == 1 and iter < disc_size:
+            while vazio < tamanho and check == 1 and iter < disc_size:
                 if disc_space[iter] != 0:
                     check = 0
                 else:
                     vazio += 1    
                 iter += 1
-                if iter == disc_size:
+                if iter  == disc_size and vazio < tamanho:
                     check = 0
             if check == 1:
                 arquivo = Arquivo(nome,base,tamanho,processo)
                 arquivos[nome] = arquivo # Armazenando arquivo na lista
-
                 for bloco in range(tamanho):
-                    
                     disc_space[base+bloco] = nome  # Armazenando arquivo no disco
                 return 0 # Indicando que colocou corretamente
             else:
-                
                 base = iter + 1    # Pulando para o próximo endereço não checado
         else:
-            
             base += 1
     return 2 # Se chega no fim do loop, retorna que não tem espaço
 
@@ -155,7 +151,6 @@ def ler_entrada_memoria(path):
                 disc_space[arq_base+bloco] = arq_nome
         except:
             return (2,0)
-    print(disc_space)
 
     # agora realizando as operações
     incompleta = 1 # Indica se ainda tem valores a ler no documento
